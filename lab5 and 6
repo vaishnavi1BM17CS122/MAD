@@ -1,0 +1,82 @@
+//main activity
+
+package com.example.lab5;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+public class MainActivity extends AppCompatActivity {
+DatabaseHelper mydb;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mydb=new DatabaseHelper(this);
+        EditText et1,et2;
+        Button ins,del,upd,dis;
+        et1=(EditText)findViewById(R.id.editText);
+        et2=(EditText)findViewById(R.id.editText2);
+        ins=(Button)findViewById(R.id.button);
+        del=(Button)findViewById(R.id.button2);
+        dis=(Button)findViewById(R.id.button3);
+        upd=(Button)findViewById(R.id.button4);
+        upd.setOnClickListener(new View.OnClickListener()){ 
+            
+
+        public void onClick (View v){
+
+            if(v.getId()==R.id.button3) {
+                mydb.update_record(et1.getText().toString(), Integer.parseInt(et2.getText().toString()));
+            }
+            }
+        }
+    }
+}
+
+
+??dataabse helper
+
+package com.example.lab5;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import androidx.annotation.Nullable;
+
+public class DatabaseHelper extends SQLiteOpenHelper {
+    public static final String DATABASE_NAME="department.db";
+    public static final String TABLE_NAME="student_table";
+    public static final String COL_1="ID";
+    public static final String COL_3="MARKS";
+    public static final String COL_2="NAME";
+    SQLiteDatabase db;
+
+    public DatabaseHelper(@Nullable Context context) {
+        super(context,DATABASE_NAME,null,1);
+     db=this.getWritableDatabase();
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("create table "+TABLE_NAME+""+
+                "(ID INTEGER PRIMARY KEY AUTOINCREMENT,"+
+                "NAME TEXT,MARKS INTEGER)");
+
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
+        onCreate(db);
+
+    }
+    public void update_record(String name,int marks)
+    {
+        String query="UPDATE student_table SET Marks="+marks+"WHERE Name="+name+";";
+        db.execSQL(query);
+    }
+}
